@@ -8,7 +8,6 @@ import org.bukkit.Instrument;
  */
 public class MusicBoxData {
     int speed;
-    int length;
     byte[][] data;
 
     public static MusicBoxData load(String json) {
@@ -17,7 +16,6 @@ public class MusicBoxData {
 
     public MusicBoxData() {
         speed = 2;
-        length = 1;
         data = new byte[5][8];
     }
 

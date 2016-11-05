@@ -1,4 +1,4 @@
-package org.devathon.contest2016;
+package org.devathon.contest2016.listeners;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -7,6 +7,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.devathon.contest2016.DataLoader;
+import org.devathon.contest2016.MusicBox;
+import org.devathon.contest2016.Util;
 
 import java.util.*;
 
@@ -28,16 +31,19 @@ public class MoveListener implements Listener {
     public void checkPlayer(Player player) {
         //Boxes to remove
         Set<MusicBox> boxes = near.get(player);
+        if (boxes == null) {
+            boxes = new HashSet<>();
+            near.put(player, boxes);
+        }
         Iterator<MusicBox> iterator = boxes.iterator();
         while (iterator.hasNext()) {
             MusicBox box = iterator.next();
             if (!Util.isClose(box.block.getLocation(), player.getLocation(), 16*3)) {
                 boxes.remove(box);
-                Set<Player> nearplayers= activated.get(box);
-                nearplayers.remove(player);
-                if (nearplayers.isEmpty()) {
-                    activated.remove(box);
+                box.players.remove(player);
+                if (box.players.isEmpty()) {
                     DataLoader.unLoadBox(box);
+                    activated.remove(box);
                 }
             }
         }
@@ -47,14 +53,7 @@ public class MoveListener implements Listener {
             if (Util.isClose(block.getLocation(), player.getLocation(), 16*3)) {
                 MusicBox box = DataLoader.loadBox(block);
                 near.get(player).add(box);
-                Set<Player> set = activated.get(box);
-                if (set == null) {
-                    Set<Player> newSet = new HashSet<>();
-                    newSet.add(player);
-                    activated.put(box, newSet);
-                } else {
-                    set.add(player);
-                }
+                box.players.add(player);
             }
         }
     }
@@ -72,13 +71,12 @@ public class MoveListener implements Listener {
         Iterator<MusicBox> iterator = boxes.iterator();
         while (iterator.hasNext()) {
             MusicBox box = iterator.next();
-                boxes.remove(box);
-                Set<Player> nearplayers= activated.get(box);
-                nearplayers.remove(event.getPlayer());
-                if (nearplayers.isEmpty()) {
-                    activated.remove(box);
-                    DataLoader.unLoadBox(box);
-                }
+            boxes.remove(box);
+            box.players.remove(event.getPlayer());
+            if (box.players.isEmpty()) {
+                DataLoader.unLoadBox(box);
+                activated.remove(box);
+            }
         }
         near.remove(event.getPlayer());
     }

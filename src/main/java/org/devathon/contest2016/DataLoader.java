@@ -3,8 +3,6 @@ package org.devathon.contest2016;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,19 +10,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Gijs on 5-11-2016.
  */
 public class DataLoader {
 
-    public static File dataFolder;
-    public static File locationsFile;
-    static Map<Block, Integer> dataMap = new HashMap<>();
-    static List<MusicBox> musicBoxes = new CopyOnWriteArrayList<>();
+    static File dataFolder;
+    static File locationsFile;
+    public static Map<Block, Integer> dataMap = new HashMap<>();
+    static Set<MusicBox> musicBoxes = ConcurrentHashMap.newKeySet();
     static LocationList list;
 
     public static void init(JavaPlugin plugin) {
