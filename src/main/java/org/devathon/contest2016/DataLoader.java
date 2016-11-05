@@ -87,6 +87,7 @@ public class DataLoader {
     }
 
     public static MusicBox loadBox(Block block) {
+        for (MusicBox box : musicBoxes) if (box.block.equals(block)) return  box;
         MusicBox box = null;
         try {
             box = new MusicBox(block, load(dataMap.get(block)));
