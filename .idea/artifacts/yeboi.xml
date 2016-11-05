@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="yeboi">
+    <output-path>$USER_HOME$/Documents/_testserver/plugins</output-path>
+    <root id="archive" name="yeboi.jar">
+      <element id="module-output" name="GijsM-2016" />
+    </root>
+  </artifact>
+</component>
