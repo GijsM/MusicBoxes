@@ -140,6 +140,18 @@ public class MusicBoxMenu implements Listener {
                     for (int i = 0; i < 90; i++) view.setItem(i, null);
                     renderMain(view);
                 } else {
+                    if (pagenumber+1 == maxPages && pagenumber>0) {
+                        boolean anythinghere = false;
+                        for (byte[] bytes : box.data.data) {
+                            for (int i = (maxPages-1)*8;i<(maxPages)*8;i++) {
+                                if (bytes[i] != 0) anythinghere = true;
+                            }
+                        }
+                        if (!anythinghere) {
+                            maxPages--;
+                            box.data.setSize(maxPages*8);
+                        }
+                    }
                     openInstrument(instrument, --pagenumber);
                 }
             } else if (slot == 85) {
@@ -149,7 +161,6 @@ public class MusicBoxMenu implements Listener {
                 }
                 openInstrument(instrument, ++pagenumber);
             }
-
         }
     }
 
