@@ -13,11 +13,11 @@ Make a machine, make an interaction with a machine, or do something completely c
 
 ## Crafting
 
-To craft a music box, simply surround a diamond with note blocks in your crafting grid, and there you have it!
+To craft a Music Box©, simply surround a diamond with note blocks in your crafting grid, and there you have it!
 
 ## Making your own music
 
-to get started, right click on the music box once you have placed it and select an instrument. After that you can start clicking the glass.
+to get started, right click on the Music Box© once you have placed it and select an instrument. After that you can start clicking the glass.
 The music goes down from above and the notes on your right are the highest.
 Once you are finished, turn it on in the main menu, and tweak the speed.
 
@@ -30,6 +30,10 @@ You can also power them with redstone, so you have automated control over the mu
 ## Removing them
 
 Simply punch the music box in either creative or surival and the item will pop up so you can replace it.
+
+## Saving them
+
+Music Boxes© don't need to be saved, they do this automatically on stop
 
 ## Video
 
