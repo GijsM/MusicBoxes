@@ -35,18 +35,18 @@ public class MoveListener implements Listener {
             boxes = new HashSet<>();
             near.put(player, boxes);
         }
-        Iterator<MusicBox> iterator = boxes.iterator();
-        while (iterator.hasNext()) {
-            MusicBox box = iterator.next();
-            if (!Util.isClose(box.block.getLocation(), player.getLocation(), 16*3)) {
-                boxes.remove(box);
-                box.players.remove(player);
-                if (box.players.isEmpty()) {
-                    DataLoader.unLoadBox(box);
-                    activated.remove(box);
+        Set<MusicBox> toRemove = new HashSet<>();
+        for (MusicBox box : boxes) {
+                if (!Util.isClose(box.block.getLocation(), player.getLocation(), 16 * 3)) {
+                    toRemove.add(box);
+                    box.players.remove(player);
+                    if (box.players.isEmpty()) {
+                        DataLoader.unLoadBox(box);
+                        activated.remove(box);
+                    }
                 }
-            }
         }
+        boxes.removeAll(toRemove);
 
         //Boxes to add
         for (Block block : DataLoader.dataMap.keySet()) {

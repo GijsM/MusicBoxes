@@ -109,10 +109,54 @@ public class MusicBoxMenu implements Listener {
                     if (box.data.speed == 10) return;
                     view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + "Speed: " + ++box.data.speed, ChatColor.GRAY + "Left and Right click to change"));
                 }
+            } else if (event.getRawSlot() >= 28 && event.getRawSlot() < 34) {
+                openInstrument(4-(33-event.getRawSlot()), 0);
+            }
+        } else {
+            int slot = event.getRawSlot();
+            int colum = (slot%9)-1;
+            int row = 2-slot/9;
+            if (colum >=0 && colum < 8 && row < 8 && row>=0) {
+                check(pagenumber, row, colum, instrument, true);
+            }
 
+        }
+    }
+
+    int instrument;
+    int pagenumber;
+
+    public void openInstrument(int instrument, int pageNumber) {
+        this.instrument = instrument;
+        this.pagenumber = pageNumber;
+        mainMenu = false;
+        surroundView(getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Music Box", null),10);
+        char[] notes = "ABCDEFG".toCharArray();
+            for (int i = 2; i < 9; i++) {
+                ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a " + ChatColor.GOLD + notes[i-2] + ChatColor.GRAY + " note", null);
+                empty.setDurability((short) 7);
+                ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this " + ChatColor.GOLD + notes[i-2] + ChatColor.GRAY + " note", null);
+                filled.setDurability((short) 4);
+                    for (int x = 1; x< 8;x++) {
+                        boolean checked = isChecked(pageNumber, i-2,x-1,instrument);
+                        view.setItem(i * 9 + x, checked ? filled : empty);
             }
         }
     }
+
+
+    public boolean isChecked(int page, int row, int colum, int instrument) {
+        byte b = box.data.data[instrument][page*7+row];
+        byte result = (byte) ((2^colum)&b);
+        return result!=0;
+    }
+    public void check(int page, int row, int colum, int instrument, boolean check) {
+        int  place = page*7+row;
+        byte bit = (byte) (2^colum);
+        if (check) box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] | bit);
+        else box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] & 0b11111111-bit);
+    }
+
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) throws IOException {

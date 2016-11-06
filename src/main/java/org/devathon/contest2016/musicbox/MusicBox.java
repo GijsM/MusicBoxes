@@ -48,6 +48,7 @@ public class MusicBox  {
     }
 
     public void updatePosition() {
+        if (menu != null)
         menu.updatePosition(position);
 
     }
