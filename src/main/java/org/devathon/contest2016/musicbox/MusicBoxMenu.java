@@ -115,9 +115,21 @@ public class MusicBoxMenu implements Listener {
         } else {
             int slot = event.getRawSlot();
             int colum = (slot%9)-1;
-            int row = 2-slot/9;
+            int row = (2-slot/9)*-1;
+            Bukkit.getLogger().info(slot + " " + colum + " " + row);
             if (colum >=0 && colum < 8 && row < 8 && row>=0) {
-                check(pagenumber, row, colum, instrument, true);
+                boolean checked = isChecked(pagenumber, row, colum, instrument);
+                check(pagenumber, row, colum, instrument, !checked);
+                char[] notes = "ABCDEFG".toCharArray();
+                if (checked) {
+                    ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a " + ChatColor.GOLD + notes[row] + ChatColor.GRAY + " note", null);
+                    empty.setDurability((short) 7);
+                    view.setItem(slot, empty);
+                } else {
+                    ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this " + ChatColor.GOLD + notes[row] + ChatColor.GRAY + " note", null);
+                    filled.setDurability((short) 4);
+                    view.setItem(slot, filled);
+                }
             }
 
         }
@@ -137,8 +149,9 @@ public class MusicBoxMenu implements Listener {
                 empty.setDurability((short) 7);
                 ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this " + ChatColor.GOLD + notes[i-2] + ChatColor.GRAY + " note", null);
                 filled.setDurability((short) 4);
-                    for (int x = 1; x< 8;x++) {
-                        boolean checked = isChecked(pageNumber, i-2,x-1,instrument);
+                byte b = box.data.data[instrument][pageNumber*7+i-2];
+                    for (int x = 1; x<8;x++) {
+                        boolean checked = ((b&((int) Math.pow(2, x-1))) != 0);
                         view.setItem(i * 9 + x, checked ? filled : empty);
             }
         }
@@ -147,12 +160,12 @@ public class MusicBoxMenu implements Listener {
 
     public boolean isChecked(int page, int row, int colum, int instrument) {
         byte b = box.data.data[instrument][page*7+row];
-        byte result = (byte) ((2^colum)&b);
+        byte result = (byte) (b&(int) Math.pow(2, colum));
         return result!=0;
     }
     public void check(int page, int row, int colum, int instrument, boolean check) {
         int  place = page*7+row;
-        byte bit = (byte) (2^colum);
+        byte bit = (byte) Math.pow(2, colum);
         if (check) box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] | bit);
         else box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] & 0b11111111-bit);
     }
