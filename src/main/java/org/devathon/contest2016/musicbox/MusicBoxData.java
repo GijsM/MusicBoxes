@@ -19,7 +19,7 @@ public class MusicBoxData {
     public MusicBoxData() {
         on = false;
         speed = 2;
-        data = new byte[5][7];
+        data = new byte[5][8];
     }
 
     public void setSize(int newsize) {

@@ -31,19 +31,23 @@ public class MusicBoxMenu implements Listener {
     MusicBox box;
     InventoryView view;
     boolean mainMenu;
-   public MusicBoxMenu(Player player, MusicBox box) {
-       inventory = player.getInventory().getContents();
-       player.getInventory().setContents(new ItemStack[9*4]);
-       Bukkit.getPluginManager().registerEvents(this, DevathonPlugin.plugin);
+    int instrument;
+    int pagenumber;
+
+    public MusicBoxMenu(Player player, MusicBox box) {
+        inventory = player.getInventory().getContents();
+        player.getInventory().setContents(new ItemStack[9 * 4]);
+        Bukkit.getPluginManager().registerEvents(this, DevathonPlugin.plugin);
         this.player = player;
         this.box = box;
         mainMenu = true;
         box.editing = true;
-       view = player.openInventory(Bukkit.createInventory(player, 9*6, ChatColor.BOLD + "Music Box"));
-       renderMain(view);
-   }
+        view = player.openInventory(Bukkit.createInventory(player, 9 * 6, ChatColor.BOLD + "Music Box"));
+        renderMain(view);
+    }
 
     public void renderMain(InventoryView view) {
+        mainMenu = true;
         ItemStack around = new ItemStack(Material.STAINED_GLASS_PANE);
         around.setDurability((short) 9);
         ItemMeta meta = around.getItemMeta();
@@ -54,22 +58,22 @@ public class MusicBoxMenu implements Listener {
         for (Instrument instrument : Instrument.values()) {
             view.setItem(i++ + 29, getItemStack(Material.NOTE_BLOCK, ChatColor.AQUA + WordUtils.capitalize((instrument.name().replace("_", " ").toLowerCase())), ChatColor.GRAY + "Click to edit this instrument"));
         }
-        view.setItem(12, !box.data.on ?  getItemStack(Material.MAGMA_CREAM, ChatColor.RED + "Music Box: Off!", ChatColor.GRAY + "Click to toggle it") :
-                                        getItemStack(Material.SLIME_BALL, ChatColor.GREEN + "Music Box: On!", ChatColor.GRAY + "Click to toggle it"));
+        view.setItem(12, !box.data.on ? getItemStack(Material.MAGMA_CREAM, ChatColor.RED + "Music Box: Off!", ChatColor.GRAY + "Click to toggle it") :
+                getItemStack(Material.SLIME_BALL, ChatColor.GREEN + "Music Box: On!", ChatColor.GRAY + "Click to toggle it"));
         view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + "Speed: " + box.data.speed, ChatColor.GRAY + "Left and Right click to change"));
     }
 
     public void surroundView(ItemStack itemStack, int height) {
-        for (int i = 0; i<9;i++) {
+        for (int i = 0; i < 9; i++) {
             view.setItem(i, itemStack);
         }
-        for (int i = 9*(height-1); i<height*9;i++) {
+        for (int i = 9 * (height - 1); i < height * 9; i++) {
             view.setItem(i, itemStack);
         }
-        for (int i = 9; i<9*(height-1);i+=9) {
+        for (int i = 9; i < 9 * (height - 1); i += 9) {
             view.setItem(i, itemStack);
         }
-        for (int i = 17; i<(height)*9;i+=9) {
+        for (int i = 17; i < (height) * 9; i += 9) {
             view.setItem(i, itemStack);
         }
     }
@@ -110,64 +114,65 @@ public class MusicBoxMenu implements Listener {
                     view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + "Speed: " + ++box.data.speed, ChatColor.GRAY + "Left and Right click to change"));
                 }
             } else if (event.getRawSlot() >= 28 && event.getRawSlot() < 34) {
-                openInstrument(4-(33-event.getRawSlot()), 0);
+                openInstrument(4 - (33 - event.getRawSlot()), 0);
             }
         } else {
             int slot = event.getRawSlot();
-            int colum = (slot%9)-1;
-            int row = (2-slot/9)*-1;
+            int colum = (slot % 9) - 1;
+            int row = (1 - slot / 9) * -1;
             Bukkit.getLogger().info(slot + " " + colum + " " + row);
-            if (colum >=0 && colum < 8 && row < 8 && row>=0) {
+            if (colum >= 0 && colum < 8 && row <= 8 && row >= 0) {
                 boolean checked = isChecked(pagenumber, row, colum, instrument);
                 check(pagenumber, row, colum, instrument, !checked);
-                char[] notes = "ABCDEFG".toCharArray();
                 if (checked) {
-                    ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a " + ChatColor.GOLD + notes[row] + ChatColor.GRAY + " note", null);
+                    ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a note", null);
                     empty.setDurability((short) 7);
                     view.setItem(slot, empty);
                 } else {
-                    ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this " + ChatColor.GOLD + notes[row] + ChatColor.GRAY + " note", null);
+                    ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this note", null);
                     filled.setDurability((short) 4);
                     view.setItem(slot, filled);
                 }
+            }
+            if (slot == 4) {
+                for (int i =0;i<90;i++) view.setItem(i, null);
+                renderMain(view);
             }
 
         }
     }
 
-    int instrument;
-    int pagenumber;
-
     public void openInstrument(int instrument, int pageNumber) {
         this.instrument = instrument;
         this.pagenumber = pageNumber;
         mainMenu = false;
-        surroundView(getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Music Box", null),10);
-        char[] notes = "ABCDEFG".toCharArray();
-            for (int i = 2; i < 9; i++) {
-                ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a " + ChatColor.GOLD + notes[i-2] + ChatColor.GRAY + " note", null);
-                empty.setDurability((short) 7);
-                ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this " + ChatColor.GOLD + notes[i-2] + ChatColor.GRAY + " note", null);
-                filled.setDurability((short) 4);
-                byte b = box.data.data[instrument][pageNumber*7+i-2];
-                    for (int x = 1; x<8;x++) {
-                        boolean checked = ((b&((int) Math.pow(2, x-1))) != 0);
-                        view.setItem(i * 9 + x, checked ? filled : empty);
+        surroundView(getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Music Box", null), 10);
+        view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Back to the main menu", ChatColor.GRAY + "Click to go back"));
+        ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a  note", null);
+        empty.setDurability((short) 7);
+        ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this note", null);
+        filled.setDurability((short) 4);
+        for (int i = 1; i < 9; i++) {
+            byte b = box.data.data[instrument][pageNumber * 8 + i - 1];
+            for (int x = 1; x < 8; x++) {
+                boolean checked = ((b & ((int) Math.pow(2, x - 1))) != 0);
+                view.setItem(i * 9 + x, checked ? filled : empty);
             }
         }
     }
 
 
     public boolean isChecked(int page, int row, int colum, int instrument) {
-        byte b = box.data.data[instrument][page*7+row];
-        byte result = (byte) (b&(int) Math.pow(2, colum));
-        return result!=0;
+        byte b = box.data.data[instrument][page * 8 + row];
+        byte result = (byte) (b & (int) Math.pow(2, colum));
+        return result != 0;
     }
+
     public void check(int page, int row, int colum, int instrument, boolean check) {
-        int  place = page*7+row;
+        int place = page * 8 + row;
         byte bit = (byte) Math.pow(2, colum);
         if (check) box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] | bit);
-        else box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] & 0b11111111-bit);
+        else box.data.data[instrument][place] = (byte) (box.data.data[instrument][place] & 0b11111111 - bit);
     }
 
 
