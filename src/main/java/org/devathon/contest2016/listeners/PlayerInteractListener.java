@@ -16,7 +16,10 @@ public class PlayerInteractListener implements Listener {
     public void interact(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
         for (MusicBox box : MoveListener.near.get(event.getPlayer())) {
-            if (box.block.getX() == event.getClickedBlock().getX() && box.block.getZ() == event.getClickedBlock().getZ() && box.block.getY() == event.getClickedBlock().getY()) box.openInventory(event.getPlayer());
+            if (box.block.getX() == event.getClickedBlock().getX() && box.block.getZ() == event.getClickedBlock().getZ() && box.block.getY() == event.getClickedBlock().getY()) {
+                box.openInventory(event.getPlayer());
+                event.setCancelled(true);
+            }
         }
     }
 

@@ -43,7 +43,6 @@ public class MusicBox  {
     }
 
     public void openInventory(Player player) {
-        Bukkit.getLogger().info("hbsdhabsdsdsddsffgggdf");
         if (!editing) menu = new MusicBoxMenu(player, this);
 
     }
