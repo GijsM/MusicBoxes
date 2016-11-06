@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Created by Gijs on 5-11-2016.
  */
 public class MusicBoxData {
-    boolean on;
+    public boolean on;
     int speed;
     byte[][] data;
 

@@ -5,9 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.devathon.contest2016.listeners.BlockPlaceListener;
-import org.devathon.contest2016.listeners.MoveListener;
-import org.devathon.contest2016.listeners.PlayerInteractListener;
+import org.devathon.contest2016.listeners.*;
 import org.devathon.contest2016.util.CustomCrafting;
 
 import java.io.IOException;
@@ -24,6 +22,8 @@ public class DevathonPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BlockRemoveListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BlockRedstoneListener(), this);
         CustomCrafting.addRecipe(Bukkit.getServer());
         DataLoader.init(this);
         for (Player player : Bukkit.getOnlinePlayers()) {

@@ -1,7 +1,8 @@
 package org.devathon.contest2016.musicbox;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Instrument;
+import org.bukkit.Location;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -34,6 +35,7 @@ public class MusicBox  {
             ticked = 0;
             for (int i = 0;i<5;i++) {
                 play(data.data[i][position], Instrument.values()[i]);
+                if (data.data[i][position] != 0) block.getWorld().playEffect(block.getLocation().add(0.5,1,0.5), Effect.NOTE, 1, 16);
             }
             updatePosition();
             if (++position >= size) position = 0;

@@ -121,7 +121,7 @@ public class MusicBoxMenu implements Listener {
             int colum = (slot % 9) - 1;
             int row = (1 - slot / 9) * -1;
             Bukkit.getLogger().info(slot + " " + colum + " " + row);
-            if (colum >= 0 && colum < 8 && row <= 8 && row >= 0) {
+            if (colum >= 0 && colum < 7 && row <= 8 && row >= 0) {
                 boolean checked = isChecked(pagenumber, row, colum, instrument);
                 check(pagenumber, row, colum, instrument, !checked);
                 if (checked) {
@@ -146,7 +146,12 @@ public class MusicBoxMenu implements Listener {
         this.instrument = instrument;
         this.pagenumber = pageNumber;
         mainMenu = false;
-        surroundView(getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Music Box", null), 10);
+        ItemStack around = new ItemStack(Material.STAINED_GLASS_PANE);
+        around.setDurability((short) 9);
+        ItemMeta meta = around.getItemMeta();
+        meta.setDisplayName(ChatColor.GRAY + "Music Box");
+        around.setItemMeta(meta);
+        surroundView(around, 10);
         view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Back to the main menu", ChatColor.GRAY + "Click to go back"));
         ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a  note", null);
         empty.setDurability((short) 7);
