@@ -6,7 +6,7 @@ This is my submission to the Devathon Project, ign: 504Errors
 This project is all about music. in fact, making your own music. Craft your very own Music Box© and create music alone, or with your friends.
 
 MAKE SURE YOUR MUSIC IS ON IN SETTINGS
-this plugin works with the music slider in the settings, not noteblocks & music
+This plugin works with the Music slider in the settings, not noteblocks & music
 
 
 ## Theme
