@@ -18,7 +18,7 @@ To craft a Music Box©, simply surround a diamond with note blocks in your craft
 ## Making your own music
 
 to get started, right click on the Music Box© once you have placed it and select an instrument. After that you can start clicking the glass.
-The music goes down from above and the notes on your right are the highest.
+The music goes down from above and the notes on your right are the highest. Click on the Nether Star to add extra pages of music
 Once you are finished, turn it on in the main menu, and tweak the speed.
 
 There you have it! add more instruments to give it a bit more feel.
@@ -39,3 +39,5 @@ Music Boxes© don't need to be saved, they do this automatically on stop
 
 If you still can't find out how it works here is a video I made:
 https://youtu.be/zM0Lur3X7VA
+
+(Extra pages weren't added at that time)
