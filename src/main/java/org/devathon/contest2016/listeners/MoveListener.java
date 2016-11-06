@@ -8,8 +8,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.devathon.contest2016.DataLoader;
-import org.devathon.contest2016.MusicBox;
-import org.devathon.contest2016.Util;
+import org.devathon.contest2016.musicbox.MusicBox;
+import org.devathon.contest2016.util.Util;
 
 import java.util.*;
 
@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class MoveListener implements Listener {
 
-    Map<MusicBox, Set<Player>> activated = new HashMap<>();
-    Map<Player, Set<MusicBox>> near = new HashMap<>();
+    public static Map<MusicBox, Set<Player>> activated = new HashMap<>();
+    public static Map<Player, Set<MusicBox>> near = new HashMap<>();
 
     @EventHandler
     public void moveChunk(PlayerMoveEvent event) {
@@ -28,7 +28,7 @@ public class MoveListener implements Listener {
         }
     }
 
-    public void checkPlayer(Player player) {
+    public static void checkPlayer(Player player) {
         //Boxes to remove
         Set<MusicBox> boxes = near.get(player);
         if (boxes == null) {

@@ -5,6 +5,8 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.devathon.contest2016.musicbox.MusicBox;
+import org.devathon.contest2016.musicbox.MusicBoxData;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,15 +67,16 @@ public class DataLoader {
         dataMap.put(block, id);
         list.locations.add(new BlockData(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), id));
         try {
-            saveBox(box, id);
+            saveBox(box);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return loadBox(block);
     }
 
-    public static void saveBox(MusicBox box, int id) throws IOException {
-        File saveFile = new File(dataFolder.getPath() + "/" + id + ".json");
+    public static void saveBox(MusicBox box) throws IOException {
+
+        File saveFile = new File(dataFolder.getPath() + "/" + dataMap.get(box.block) + ".json");
         if (!saveFile.exists()) saveFile.createNewFile();
         FileUtils.writeStringToFile(saveFile, new Gson().toJson(box.data));
     }
@@ -89,7 +92,6 @@ public class DataLoader {
         MusicBox box = null;
         try {
             box = new MusicBox(block, load(dataMap.get(block)));
-            box.load();
             musicBoxes.add(box);
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +100,6 @@ public class DataLoader {
     }
 
     public static void unLoadBox(MusicBox box) {
-        box.unload();
         musicBoxes.remove(box);
     }
 

@@ -1,4 +1,4 @@
-package org.devathon.contest2016;
+package org.devathon.contest2016.musicbox;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
@@ -13,36 +13,44 @@ import java.util.Set;
  * Created by Gijs on 5-11-2016.
  */
 public class MusicBox  {
+    boolean editing = false;
     public Set<Player> players = new HashSet();
     public Block block;
     public MusicBoxData data;
+    public MusicBoxMenu menu;
 
     public MusicBox(Block block, MusicBoxData data) {
         this.block = block;
         this.data = data;
+        size = data.data[0].length;
     }
-
-    public void reload() {
-
-    }
-
-    public void load() {
-
-    }
-
-    public void unload() {
-
-    }
+    private int size;
     private int position = 0;
     private int ticked = 0;
 
     public void tick() {
+        if (!data.on) return;
         if (++ticked >= data.speed) {
-            play((byte) 0b0001_1001, Instrument.PIANO);
             ticked = 0;
+            for (int i = 0;i<5;i++) {
+                play(data.data[i][position], Instrument.values()[i]);
+            }
+            updatePosition();
+            if (++position >= size) position = 0;
         } else {
             return;
         }
+    }
+
+    public void openInventory(Player player) {
+        Bukkit.getLogger().info("hbsdhabsdsdsddsffgggdf");
+        if (!editing) menu = new MusicBoxMenu(player, this);
+
+    }
+
+    public void updatePosition() {
+        menu.updatePosition(position);
+
     }
 
     public void play(byte b, Instrument instrument) {
