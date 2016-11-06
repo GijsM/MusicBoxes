@@ -11,25 +11,26 @@ import org.devathon.contest2016.util.CustomCrafting;
 import java.io.IOException;
 
 
-public class DevathonPlugin extends JavaPlugin implements Listener {
+public class MusicBoxPlugin extends JavaPlugin implements Listener {
 
     public static Plugin plugin;
 
 
     @Override
     public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BlockRemoveListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BlockRedstoneListener(), this);
+        register(new BlockRedstoneListener(), new MoveListener(), new PlayerInteractListener(), new BlockRemoveListener(), new BlockPlaceListener());
         CustomCrafting.addRecipe(Bukkit.getServer());
         DataLoader.init(this);
         for (Player player : Bukkit.getOnlinePlayers()) {
             MoveListener.checkPlayer(player);
         }
         plugin = this;
+    }
+
+    public void register(Listener... listeners) {
+        for (Listener listener : listeners) {
+            Bukkit.getPluginManager().registerEvents(listener, this);
+        }
     }
 
     @Override

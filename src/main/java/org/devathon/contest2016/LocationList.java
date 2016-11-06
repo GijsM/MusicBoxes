@@ -1,8 +1,6 @@
 package org.devathon.contest2016;
 
 
-import org.bukkit.block.Block;
-
 import java.io.File;
 import java.util.List;
 

@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class DataLoader {
 
+    //EPIC HOW TO: static abuse.
+
     static File dataFolder;
     static File locationsFile;
     public static Map<Block, Integer> dataMap = new HashMap<>();

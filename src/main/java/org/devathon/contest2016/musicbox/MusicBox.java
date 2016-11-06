@@ -2,7 +2,6 @@ package org.devathon.contest2016.musicbox;
 
 import org.bukkit.Effect;
 import org.bukkit.Instrument;
-import org.bukkit.Location;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

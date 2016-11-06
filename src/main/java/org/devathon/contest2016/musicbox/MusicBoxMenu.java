@@ -16,7 +16,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.devathon.contest2016.DataLoader;
-import org.devathon.contest2016.DevathonPlugin;
+import org.devathon.contest2016.MusicBoxPlugin;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class MusicBoxMenu implements Listener {
     public MusicBoxMenu(Player player, MusicBox box) {
         inventory = player.getInventory().getContents();
         player.getInventory().setContents(new ItemStack[9 * 4]);
-        Bukkit.getPluginManager().registerEvents(this, DevathonPlugin.plugin);
+        Bukkit.getPluginManager().registerEvents(this, MusicBoxPlugin.plugin);
         this.player = player;
         this.box = box;
         mainMenu = true;
