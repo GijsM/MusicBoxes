@@ -146,7 +146,6 @@ public class MusicBoxMenu implements Listener {
                 if (pagenumber+1 >= maxPages) {
                     maxPages++;
                     box.data.setSize(maxPages*8);
-                    Bukkit.getLogger().info(box.data.data[1].length + "");
                 }
                 openInstrument(instrument, ++pagenumber);
             }
@@ -178,7 +177,6 @@ public class MusicBoxMenu implements Listener {
         empty.setDurability((short) 7);
         ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this note", null);
         filled.setDurability((short) 4);
-        Bukkit.getLogger().info(box.data.data[instrument].length + "ss");
         for (int i = 1; i < 9; i++) {
             byte b = box.data.data[instrument][pageNumber * 8 + i - 1];
             for (int x = 1; x < 8; x++) {
