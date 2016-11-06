@@ -30,6 +30,7 @@ public class MusicBoxMenu implements Listener {
     ItemStack[] inventory;
     MusicBox box;
     InventoryView view;
+    int maxPages;
     boolean mainMenu;
     int instrument;
     int pagenumber;
@@ -40,6 +41,7 @@ public class MusicBoxMenu implements Listener {
         Bukkit.getPluginManager().registerEvents(this, MusicBoxPlugin.plugin);
         this.player = player;
         this.box = box;
+        maxPages = box.data.data[0].length/8;
         mainMenu = true;
         box.editing = true;
         view = player.openInventory(Bukkit.createInventory(player, 9 * 6, ChatColor.BOLD + "Music Box"));
@@ -120,8 +122,7 @@ public class MusicBoxMenu implements Listener {
             int slot = event.getRawSlot();
             int colum = (slot % 9) - 1;
             int row = (1 - slot / 9) * -1;
-            Bukkit.getLogger().info(slot + " " + colum + " " + row);
-            if (colum >= 0 && colum < 7 && row <= 8 && row >= 0) {
+            if (colum >= 0 && colum < 7 && row <= 7 && row >= 0) {
                 boolean checked = isChecked(pagenumber, row, colum, instrument);
                 check(pagenumber, row, colum, instrument, !checked);
                 if (checked) {
@@ -135,8 +136,19 @@ public class MusicBoxMenu implements Listener {
                 }
             }
             if (slot == 4) {
-                for (int i =0;i<90;i++) view.setItem(i, null);
-                renderMain(view);
+                if (pagenumber == 0) {
+                    for (int i = 0; i < 90; i++) view.setItem(i, null);
+                    renderMain(view);
+                } else {
+                    openInstrument(instrument, --pagenumber);
+                }
+            } else if (slot == 85) {
+                if (pagenumber+1 >= maxPages) {
+                    maxPages++;
+                    box.data.setSize(maxPages*8);
+                    Bukkit.getLogger().info(box.data.data[1].length + "");
+                }
+                openInstrument(instrument, ++pagenumber);
             }
 
         }
@@ -152,11 +164,21 @@ public class MusicBoxMenu implements Listener {
         meta.setDisplayName(ChatColor.GRAY + "Music Box");
         around.setItemMeta(meta);
         surroundView(around, 10);
-        view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Back to the main menu", ChatColor.GRAY + "Click to go back"));
+        if (pageNumber == 0) {
+            view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Back to the Main Menu", ChatColor.GRAY + "Click to go back"));
+        } else {
+            view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Go Back One Page", ChatColor.GRAY + "Click to go back"));
+        }
+        if (pageNumber == maxPages-1) {
+            view.setItem(85, getItemStack(Material.NETHER_STAR, ChatColor.GOLD + "Create next page", ChatColor.GRAY + "Click to create the next page"));
+        } else {
+            view.setItem(85, getItemStack(Material.ARROW, ChatColor.GOLD + "Go to the Next Page", ChatColor.GRAY + "Click to go to the next page"));
+        }
         ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a  note", null);
         empty.setDurability((short) 7);
         ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this note", null);
         filled.setDurability((short) 4);
+        Bukkit.getLogger().info(box.data.data[instrument].length + "ss");
         for (int i = 1; i < 9; i++) {
             byte b = box.data.data[instrument][pageNumber * 8 + i - 1];
             for (int x = 1; x < 8; x++) {

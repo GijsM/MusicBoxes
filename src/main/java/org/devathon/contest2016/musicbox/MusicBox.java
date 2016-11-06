@@ -39,7 +39,7 @@ public class MusicBox  {
             }
             if (note) block.getWorld().playEffect(block.getLocation().add(0.5,1,0.5), Effect.NOTE, 1, 16);
             updatePosition();
-            if (++position >= size) position = 0;
+            if (++position >= data.data[0].length) position = 0;
         } else {
             return;
         }

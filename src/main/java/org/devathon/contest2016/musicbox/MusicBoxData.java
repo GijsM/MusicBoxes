@@ -28,6 +28,7 @@ public class MusicBoxData {
         for (byte[] bytes : data) {
             newdata[i] = Arrays.copyOf(data[i++], newsize);
         }
+        data = newdata;
     }
 
     public String save() {
