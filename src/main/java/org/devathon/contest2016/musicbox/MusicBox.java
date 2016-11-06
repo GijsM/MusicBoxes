@@ -33,10 +33,12 @@ public class MusicBox  {
         if (!data.on) return;
         if (++ticked >= data.speed) {
             ticked = 0;
+            boolean note = false;
             for (int i = 0;i<5;i++) {
                 play(data.data[i][position], Instrument.values()[i]);
-                if (data.data[i][position] != 0) block.getWorld().playEffect(block.getLocation().add(0.5,1,0.5), Effect.NOTE, 1, 16);
+                if (data.data[i][position] != 0) note = true;
             }
+            if (note) block.getWorld().playEffect(block.getLocation().add(0.5,1,0.5), Effect.NOTE, 1, 16);
             updatePosition();
             if (++position >= size) position = 0;
         } else {

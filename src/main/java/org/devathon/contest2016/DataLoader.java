@@ -46,7 +46,6 @@ public class DataLoader {
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (MusicBox box : musicBoxes) {
-                if (!box.block.getChunk().isLoaded()) Bukkit.getLogger().info("boyy");
                 box.tick();
             }
         },0,1);

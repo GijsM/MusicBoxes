@@ -1,12 +1,10 @@
 # Devathon Project
-This is the base layout for your Devathon Project. It includes several scripts to make running incredibly easy on Windows, Mac, and Linux.
+This is my submission to the Devathon Project, ign: 504Errors
 
-## Help
+## About
 
-Help will be available for 25 hours during the contest at the following sources:
+This project is all about music. in fact, making your own music. Craft your very own Music Box© and create music alone, or with your friends.
 
-Twitter: https://twitter.com/JoinDevathon
-Discord: https://discordapp.com/invite/qNxMS5B
 
 ## Theme
 

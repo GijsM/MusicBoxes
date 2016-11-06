@@ -1,6 +1,7 @@
 package org.devathon.contest2016.listeners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -15,8 +16,8 @@ public class BlockRedstoneListener implements Listener{
 
     @EventHandler
     public void onRedstone(BlockPhysicsEvent event) {
+        if (event.getBlock().getType() != Material.ENDER_PORTAL_FRAME) return;
         if (DataLoader.dataMap.containsKey(event.getBlock())) {
-            Bukkit.getLogger().info("bo");
             MusicBox box = DataLoader.loadBox(event.getBlock());
             box.data.on = event.getBlock().getBlockPower() > 0;
         }
