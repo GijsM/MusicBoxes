@@ -175,7 +175,7 @@ public class MusicBoxMenu implements Listener {
         around.setItemMeta(meta);
         surroundView(around, 10);
         if (pageNumber == 0) {
-            view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Back to the Main Menu", ChatColor.GRAY + "Click to go back"));
+            view.setItem(4, getItemStack(Material.NOTE_BLOCK, ChatColor.GOLD + "Back to the Main Menu", ChatColor.GRAY + "Click to go back"));
         } else {
             view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Go Back One Page", ChatColor.GRAY + "Click to go back"));
         }
