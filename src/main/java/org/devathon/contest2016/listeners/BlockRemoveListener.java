@@ -22,13 +22,17 @@ public class BlockRemoveListener implements Listener {
     }
 
     void checkRemove(Block block, Player player) {
+        MusicBox box1 =  null;
         for (MusicBox box : MoveListener.near.get(player)) {
             if (box.block.getX() == block.getX() && box.block.getZ() == block.getZ() && box.block.getY() == block.getY()) {
                 block.getWorld().dropItemNaturally(block.getLocation().add(0.5,0.5,0.5), CustomCrafting.musicBox);
                 DataLoader.removeBox(box);
+                MoveListener.activated.remove(box);
                 box.block.setType(Material.AIR);
+                break;
             }
         }
+        if (box1 != null) MoveListener.near.get(player).remove(box1);
     }
 
     @EventHandler

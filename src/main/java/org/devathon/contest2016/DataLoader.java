@@ -90,6 +90,7 @@ public class DataLoader {
         }
         if (toRemove == null) return;
         list.locations.remove(toRemove);
+        musicBoxes.remove(box);
         dataMap.remove(box.block);
         unLoadBox(box);
 
