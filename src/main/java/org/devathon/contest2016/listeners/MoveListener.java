@@ -18,18 +18,16 @@ import java.util.*;
  */
 public class MoveListener implements Listener {
 
-    public static Map<MusicBox, Set<Player>> activated = new HashMap<>();
     public static Map<Player, Set<MusicBox>> near = new HashMap<>();
 
     @EventHandler
-    public void moveChunk(PlayerMoveEvent event) {
+    public void move(PlayerMoveEvent event) {
         if (event.getTo().getChunk() != event.getFrom().getChunk()) {
             checkPlayer(event.getPlayer());
         }
     }
 
     public static void checkPlayer(Player player) {
-        //Boxes to remove
         Set<MusicBox> boxes = near.get(player);
         if (boxes == null) {
             boxes = new HashSet<>();
@@ -42,7 +40,6 @@ public class MoveListener implements Listener {
                     box.players.remove(player);
                     if (box.players.isEmpty()) {
                         DataLoader.unLoadBox(box);
-                        activated.remove(box);
                     }
                 }
         }
@@ -75,7 +72,6 @@ public class MoveListener implements Listener {
             box.players.remove(event.getPlayer());
             if (box.players.isEmpty()) {
                 DataLoader.unLoadBox(box);
-                activated.remove(box);
             }
         }
         near.remove(event.getPlayer());

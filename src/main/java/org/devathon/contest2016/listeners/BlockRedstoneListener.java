@@ -22,7 +22,7 @@ public class BlockRedstoneListener implements Listener{
             boolean on = event.getBlock().getBlockPower() > 0;
             boolean toggle =  box.data.on != on;
             box.data.on = on;
-            if (toggle) DataLoader.saveBox(box);
+            if (toggle) box.data.save();
         }
     }
 }

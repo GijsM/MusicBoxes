@@ -1,6 +1,6 @@
 package org.devathon.contest2016.musicbox;
 
-import com.google.gson.Gson;
+import org.devathon.contest2016.util.BlockData;
 
 import java.util.Arrays;
 
@@ -9,18 +9,10 @@ import java.util.Arrays;
  */
 public class MusicBoxData {
     public boolean on;
-    int speed;
-    byte[][] data;
+    public int speed;
+    public byte[][] data;
+    public BlockData blockData;
 
-    public static MusicBoxData load(String json) {
-        return new Gson().fromJson(json, MusicBoxData.class);
-    }
-
-    public MusicBoxData() {
-        on = false;
-        speed = 2;
-        data = new byte[5][8];
-    }
 
     public void setSize(int newsize) {
         byte[][] newdata = new byte[5][newsize];
@@ -31,7 +23,14 @@ public class MusicBoxData {
         data = newdata;
     }
 
-    public String save() {
-        return new Gson().toJson(this);
+    public void save() {
+        blockData.save(this);
+    }
+
+    public MusicBoxData(boolean on, int speed, byte[][] data, BlockData blockData) {
+        this.blockData = blockData;
+        this.on = on;
+        this.speed = speed;
+        this.data = data;
     }
 }

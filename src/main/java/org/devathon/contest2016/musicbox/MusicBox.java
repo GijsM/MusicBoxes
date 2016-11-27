@@ -2,7 +2,7 @@ package org.devathon.contest2016.musicbox;
 
 import org.bukkit.Effect;
 import org.bukkit.Instrument;
-import org.bukkit.Note;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -22,9 +22,7 @@ public class MusicBox  {
     public MusicBox(Block block, MusicBoxData data) {
         this.block = block;
         this.data = data;
-        size = data.data[0].length;
     }
-    private int size;
     private int position = 0;
     private int ticked = 0;
 
@@ -35,8 +33,8 @@ public class MusicBox  {
             boolean note = false;
             if (position >= data.data[0].length) position = 0;
             for (int i = 0;i<5;i++) {
-                    play(data.data[i][position], Instrument.values()[i]);
-                    if (data.data[i][position] != 0) note = true;
+                play(data.data[i][position], Instrument.values()[i]);
+                if (data.data[i][position] != 0) note = true;
             }
             if (note) block.getWorld().playEffect(block.getLocation().add(0.5,1,0.5), Effect.NOTE, 1, 16);
             updatePosition();
@@ -48,25 +46,32 @@ public class MusicBox  {
 
     public void openInventory(Player player) {
         if (!editing) menu = new MusicBoxMenu(player, this);
-
     }
 
     public void updatePosition() {
         if (menu != null)
-        menu.updatePosition(position);
+            menu.updatePosition(position);
 
     }
 
     public void play(byte b, Instrument instrument) {
-        for (Player player : players) {
-            if ((0b0000_0001&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.A, false));
-            if ((0b0000_0010&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.B, false));
-            if ((0b0000_0100&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.C, false));
-            if ((0b0000_1000&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.D, false));
-            if ((0b0001_0000&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.E, false));
-            if ((0b0010_0000&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.F, false));
-            if ((0b0100_0000&b) != 0) player.playNote(block.getLocation(), instrument, new Note(0, Note.Tone.G, false));
-        }
+        if ((0b0000_0001&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.6F);
+        if ((0b0000_0010&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 2/3F);
+        if ((0b0000_0100&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.7F);
+        if ((0b0000_1000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.8F);
+        if ((0b0001_0000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.9F);
+        if ((0b0010_0000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.95F);
+        if ((0b0100_0000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 1.0F);
+    }
 
+    Sound getSound(Instrument instrument) {
+        switch (instrument) {
+            case BASS_DRUM: return Sound.BLOCK_NOTE_BASEDRUM;
+            case BASS_GUITAR: return Sound.BLOCK_NOTE_BASS;
+            case PIANO: return Sound.BLOCK_NOTE_HARP;
+            case SNARE_DRUM: return Sound.BLOCK_NOTE_SNARE;
+            case STICKS: return Sound.BLOCK_NOTE_HAT;
+        }
+        return null;
     }
 }

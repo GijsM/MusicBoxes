@@ -27,7 +27,6 @@ public class BlockRemoveListener implements Listener {
             if (box.block.getX() == block.getX() && box.block.getZ() == block.getZ() && box.block.getY() == block.getY()) {
                 block.getWorld().dropItemNaturally(block.getLocation().add(0.5,0.5,0.5), CustomCrafting.musicBox);
                 DataLoader.removeBox(box);
-                MoveListener.activated.remove(box);
                 box.block.setType(Material.AIR);
                 break;
             }

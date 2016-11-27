@@ -15,7 +15,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.devathon.contest2016.DataLoader;
 import org.devathon.contest2016.MusicBoxPlugin;
 
 import java.io.IOException;
@@ -217,7 +216,7 @@ public class MusicBoxMenu implements Listener {
         if (event.getView() != view) return;
         box.editing = false;
         player.getInventory().setContents(inventory);
-        DataLoader.saveBox(box);
+        box.data.save();
         HandlerList.unregisterAll(this);
     }
 }
