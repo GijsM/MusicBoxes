@@ -12,13 +12,14 @@ import org.devathon.contest2016.musicbox.MusicBox;
 import org.devathon.contest2016.util.Util;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Gijs on 5-11-2016.
  */
-public class MoveListener implements Listener {
+public class DataLoaderListener implements Listener {
 
-    public static Map<Player, Set<MusicBox>> near = new HashMap<>();
+    public static Map<Player, Set<MusicBox>> near = new ConcurrentHashMap<>();
 
     @EventHandler
     public void move(PlayerMoveEvent event) {
@@ -65,10 +66,8 @@ public class MoveListener implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         Set<MusicBox> boxes = near.get(event.getPlayer());
-        Iterator<MusicBox> iterator = boxes.iterator();
-        while (iterator.hasNext()) {
-            MusicBox box = iterator.next();
-            boxes.remove(box);
+        for (Object object : boxes.toArray()) {
+            MusicBox box = (MusicBox) object;
             box.players.remove(event.getPlayer());
             if (box.players.isEmpty()) {
                 DataLoader.unLoadBox(box);

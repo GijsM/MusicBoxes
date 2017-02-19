@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class MusicBoxData {
     public boolean on;
     public int speed;
+    public int volume;
     public byte[][] data;
     public BlockData blockData;
 
@@ -27,7 +28,9 @@ public class MusicBoxData {
         blockData.save(this);
     }
 
-    public MusicBoxData(boolean on, int speed, byte[][] data, BlockData blockData) {
+    public MusicBoxData(boolean on, int speed, byte[][] data, BlockData blockData, int volume) {
+        if (volume == 0) volume = 10;
+        this.volume = volume;
         this.blockData = blockData;
         this.on = on;
         this.speed = speed;

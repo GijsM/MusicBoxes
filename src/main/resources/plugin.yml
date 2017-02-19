@@ -1,7 +1,25 @@
-name: Devathon Project
-description: A project for the Devathon contest
-version: 1.0.0
-author: Your Name Here
+name: MusicBoxes
+description: A plugin that adds musical boxes
+version: 1.4.1
+author: 504Errors
 
 main: org.devathon.contest2016.MusicBoxPlugin
-
+commands:
+   MusicBoxes:
+     description: Main MusicBoxes command
+permissions:
+    MusicBoxes.give:
+     description: get access to the give command
+     default: op
+    MusicBoxes.break:
+     description: make it possible to break boxes
+     default: true
+    MusicBoxes.open:
+     description: make it possible to open boxes
+     default: true
+    MusicBoxes.craft:
+     description: make it possible to craft boxes
+     default: true
+    MusicBoxes.reload:
+     description: make it possible to reload
+     default: op

@@ -18,13 +18,15 @@ public class BlockData {
     public String data;
     public int speed;
     public boolean on;
+    public int volume;
 
-    public BlockData(String world, int x, int y, int z, int id) {
+    public BlockData(String world, int x, int y, int z, int id, int volume) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
         this.id = id;
+        this.volume = volume;
     }
 
     public void save(MusicBoxData data) {
@@ -39,6 +41,7 @@ public class BlockData {
         this.data = Base64.getEncoder().encodeToString(Compression.compress(byteData));
         this.on = data.on;
         this.speed = data.speed;
+        this.volume = data.volume;
     }
 
     public MusicBoxData getData() {
@@ -48,7 +51,7 @@ public class BlockData {
         for (int i = 0; i<5;i++) {
             alldata[i] = Arrays.copyOfRange(dataArray, i*size, (i+1)*size);
         }
-        return new MusicBoxData(on, speed, alldata, this);
+        return new MusicBoxData(on, speed, alldata, this, volume);
     }
 
 

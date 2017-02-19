@@ -21,8 +21,8 @@ public class CustomCrafting {
         musicBox = new ItemStack(Material.ENDER_PORTAL_FRAME);
         musicBox.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
         ItemMeta meta = musicBox.getItemMeta();
-        meta.setDisplayName(ChatColor.AQUA + "Music Box");
-        meta.setLore(Collections.singletonList(ChatColor.GRAY + "Place down at a nice spot!"));
+        meta.setDisplayName(ChatColor.AQUA + LanguageUtils.displayname);
+        meta.setLore(Collections.singletonList(ChatColor.GRAY + LanguageUtils.lore));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         musicBox.setItemMeta(meta);
         ShapedRecipe recipe = new ShapedRecipe(musicBox);

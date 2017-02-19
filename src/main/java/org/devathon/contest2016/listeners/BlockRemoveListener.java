@@ -1,9 +1,12 @@
 package org.devathon.contest2016.listeners;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -16,26 +19,32 @@ import org.devathon.contest2016.util.CustomCrafting;
  */
 public class BlockRemoveListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDamage(BlockDamageEvent event) {
-        checkRemove(event.getBlock(), event.getPlayer());
+        checkRemove(event.getBlock(), event.getPlayer(), event);
     }
 
-    void checkRemove(Block block, Player player) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBreak(BlockBreakEvent event) {
+        checkRemove(event.getBlock(), event.getPlayer(), event);
+    }
+
+    void checkRemove(Block block, Player player, Cancellable cancellable) {
         MusicBox box1 =  null;
-        for (MusicBox box : MoveListener.near.get(player)) {
+        for (MusicBox box : DataLoaderListener.near.get(player)) {
             if (box.block.getX() == block.getX() && box.block.getZ() == block.getZ() && box.block.getY() == block.getY()) {
-                block.getWorld().dropItemNaturally(block.getLocation().add(0.5,0.5,0.5), CustomCrafting.musicBox);
+                if (!player.hasPermission("MusicBoxes.break") || cancellable.isCancelled()) {
+                    cancellable.setCancelled(true);
+                    return;
+                }
+                if (player.getGameMode() != GameMode.CREATIVE) block.getWorld().dropItemNaturally(block.getLocation().add(0.5,0.5,0.5), CustomCrafting.musicBox);
                 DataLoader.removeBox(box);
                 box.block.setType(Material.AIR);
+                box1 = box;
                 break;
             }
         }
-        if (box1 != null) MoveListener.near.get(player).remove(box1);
+        if (box1 != null) DataLoaderListener.near.get(player).remove(box1);
     }
 
-    @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        checkRemove(event.getBlock(), event.getPlayer());
-    }
 }

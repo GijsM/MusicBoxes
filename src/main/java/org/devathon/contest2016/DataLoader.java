@@ -8,11 +8,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.devathon.contest2016.musicbox.MusicBox;
 import org.devathon.contest2016.musicbox.MusicBoxData;
 import org.devathon.contest2016.util.BlockData;
+import org.devathon.contest2016.util.Compression;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataLoader {
 
     static File locationsFile;
-    public static Map<Block, MusicBoxData> dataMap = new HashMap<>();
+    public static Map<Block, MusicBoxData> dataMap = new ConcurrentHashMap<>();
     static Set<MusicBox> musicBoxes = ConcurrentHashMap.newKeySet();
     static LocationList list;
 
@@ -37,11 +37,24 @@ public class DataLoader {
         File dataFolder = plugin.getDataFolder();
         dataFolder.mkdir();
         locationsFile = new File(dataFolder.getPath() + "/locations.json");
-        try {
-            locationsFile.createNewFile();
-            list = new Gson().fromJson(FileUtils.readFileToString(locationsFile), LocationList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (locationsFile.exists()) {
+            try {
+                list = new Gson().fromJson(FileUtils.readFileToString(locationsFile), LocationList.class);
+                locationsFile.delete();
+                locationsFile = new File(dataFolder.getPath() + "/locations.data");
+                locationsFile.createNewFile();
+                saveLocations();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            locationsFile = new File(dataFolder.getPath() + "/locations.data");
+            try {
+                locationsFile.createNewFile();
+                list = new Gson().fromJson(new String(Compression.decompress(FileUtils.readFileToByteArray(locationsFile))), LocationList.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (list == null) {
             list = new LocationList();
@@ -63,9 +76,9 @@ public class DataLoader {
 
     public static MusicBox createBox(Block block) {
         if (dataMap.containsKey(block)) return null;
-        BlockData data = new BlockData(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), list.current++);
+        BlockData data = new BlockData(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), list.current++, 10);
         list.locations.add(data);
-        MusicBox box = new MusicBox(block, new MusicBoxData(false, 2, new byte[5][8], data));
+        MusicBox box = new MusicBox(block, new MusicBoxData(false, 2, new byte[5][8], data, 10));
         dataMap.put(block, box.data);
         box.data.save();
         return loadBox(block);
@@ -75,7 +88,7 @@ public class DataLoader {
 
 
     public static void saveLocations() throws IOException {
-        FileUtils.writeStringToFile(locationsFile, new Gson().toJson(list));
+        FileUtils.writeByteArrayToFile(locationsFile, Compression.compress(new Gson().toJson(list).getBytes()));
     }
 
     public static MusicBox loadBox(Block block) {

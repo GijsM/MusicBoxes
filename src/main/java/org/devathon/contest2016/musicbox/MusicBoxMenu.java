@@ -1,6 +1,5 @@
 package org.devathon.contest2016.musicbox;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Instrument;
@@ -16,14 +15,19 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.devathon.contest2016.MusicBoxPlugin;
+import org.devathon.contest2016.util.LanguageUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Gijs on 5-11-2016.
  */
 public class MusicBoxMenu implements Listener {
+
+    public static Set<MusicBoxMenu> openMenus = new HashSet<>();
 
     Player player;
     ItemStack[] inventory;
@@ -43,8 +47,10 @@ public class MusicBoxMenu implements Listener {
         maxPages = box.data.data[0].length/8;
         mainMenu = true;
         box.editing = true;
-        view = player.openInventory(Bukkit.createInventory(player, 9 * 6, ChatColor.BOLD + "Music Box"));
+        view = player.openInventory(Bukkit.createInventory(player, 9 * 6, ChatColor.BOLD + LanguageUtils.displayname));
         renderMain(view);
+        openMenus.add(this);
+        player.updateInventory();
     }
 
     public void renderMain(InventoryView view) {
@@ -52,16 +58,33 @@ public class MusicBoxMenu implements Listener {
         ItemStack around = new ItemStack(Material.STAINED_GLASS_PANE);
         around.setDurability((short) 9);
         ItemMeta meta = around.getItemMeta();
-        meta.setDisplayName(ChatColor.GRAY + "Music Box");
+        meta.setDisplayName(ChatColor.GRAY + LanguageUtils.displayname);
         around.setItemMeta(meta);
         surroundView(around, 6);
         int i = 0;
         for (Instrument instrument : Instrument.values()) {
-            view.setItem(i++ + 29, getItemStack(Material.NOTE_BLOCK, ChatColor.AQUA + WordUtils.capitalize((instrument.name().replace("_", " ").toLowerCase())), ChatColor.GRAY + "Click to edit this instrument"));
+            view.setItem(i++ + 29, getItemStack(Material.NOTE_BLOCK, ChatColor.AQUA + getInstrumentName(instrument), ChatColor.GRAY + LanguageUtils.clickeditinstrument));
         }
-        view.setItem(12, !box.data.on ? getItemStack(Material.MAGMA_CREAM, ChatColor.RED + "Music Box: Off!", ChatColor.GRAY + "Click to toggle it") :
-                getItemStack(Material.SLIME_BALL, ChatColor.GREEN + "Music Box: On!", ChatColor.GRAY + "Click to toggle it"));
-        view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + "Speed: " + box.data.speed, ChatColor.GRAY + "Left and Right click to change"));
+        view.setItem(12, !box.data.on ? getItemStack(Material.MAGMA_CREAM, ChatColor.RED + LanguageUtils.musicboxoff, ChatColor.GRAY + LanguageUtils.clicktoggle) :
+                getItemStack(Material.SLIME_BALL, ChatColor.GREEN + LanguageUtils.musicboxoff, ChatColor.GRAY + LanguageUtils.clicktoggle));
+        view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + LanguageUtils.speed + box.data.speed, ChatColor.GRAY + LanguageUtils.leftrighttochange));
+        view.setItem(13, getItemStack(Material.DOUBLE_PLANT, ChatColor.AQUA + LanguageUtils.volume + box.data.volume, ChatColor.GRAY + LanguageUtils.leftrighttochange));
+    }
+
+    public String getInstrumentName(Instrument instrument) {
+        switch (instrument) {
+            case BASS_DRUM:
+                return LanguageUtils.bassdrum;
+            case BASS_GUITAR:
+                return LanguageUtils.bassguitar;
+            case PIANO:
+                return LanguageUtils.piano;
+            case SNARE_DRUM:
+                return LanguageUtils.snaredrum;
+            case STICKS:
+                return LanguageUtils.sticks;
+        }
+        return null;
     }
 
     public void surroundView(ItemStack itemStack, int height) {
@@ -100,19 +123,28 @@ public class MusicBoxMenu implements Listener {
             if (event.getRawSlot() == 12) {
                 if (box.data.on) {
                     box.data.on = false;
-                    view.setItem(12, getItemStack(Material.MAGMA_CREAM, ChatColor.RED + "Music Box: Off!", ChatColor.GRAY + "Click to toggle it"));
+                    view.setItem(12, getItemStack(Material.MAGMA_CREAM, ChatColor.RED + LanguageUtils.musicboxoff, ChatColor.GRAY + LanguageUtils.clicktoggle));
                 } else {
                     box.data.on = true;
-                    view.setItem(12, getItemStack(Material.SLIME_BALL, ChatColor.GREEN + "Music Box: On!", ChatColor.GRAY + "Click to toggle it"));
+                    view.setItem(12, getItemStack(Material.SLIME_BALL, ChatColor.GREEN + LanguageUtils.musicboxon, ChatColor.GRAY + LanguageUtils.clicktoggle));
                 }
             } else if (event.getRawSlot() == 14) {
                 if (event.getAction() == InventoryAction.PICKUP_ALL) {
                     if (box.data.speed == 1) return;
-                    view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + "Speed: " + --box.data.speed, ChatColor.GRAY + "Left and Right click to change"));
+                    view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + LanguageUtils.speed + --box.data.speed, ChatColor.GRAY + LanguageUtils.leftrighttochange));
 
                 } else if (event.getAction() == InventoryAction.PICKUP_HALF) {
                     if (box.data.speed == 10) return;
-                    view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + "Speed: " + ++box.data.speed, ChatColor.GRAY + "Left and Right click to change"));
+                    view.setItem(14, getItemStack(Material.FEATHER, ChatColor.AQUA + LanguageUtils.speed + ++box.data.speed, ChatColor.GRAY + LanguageUtils.leftrighttochange));
+                }
+            } else if (event.getRawSlot() == 13) {
+                if (event.getAction() == InventoryAction.PICKUP_ALL) {
+                    if (box.data.volume == 1) return;
+                    view.setItem(13, getItemStack(Material.DOUBLE_PLANT, ChatColor.AQUA + LanguageUtils.volume + --box.data.volume, ChatColor.GRAY + LanguageUtils.leftrighttochange));
+
+                } else if (event.getAction() == InventoryAction.PICKUP_HALF) {
+                    if (box.data.volume == 10) return;
+                    view.setItem(13, getItemStack(Material.DOUBLE_PLANT, ChatColor.AQUA + LanguageUtils.volume + ++box.data.volume, ChatColor.GRAY + LanguageUtils.leftrighttochange));
                 }
             } else if (event.getRawSlot() >= 28 && event.getRawSlot() < 34) {
                 openInstrument(4 - (33 - event.getRawSlot()), 0);
@@ -125,11 +157,11 @@ public class MusicBoxMenu implements Listener {
                 boolean checked = isChecked(pagenumber, row, colum, instrument);
                 check(pagenumber, row, colum, instrument, !checked);
                 if (checked) {
-                    ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a note", null);
+                    ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + LanguageUtils.clickaddnote, null);
                     empty.setDurability((short) 7);
                     view.setItem(slot, empty);
                 } else {
-                    ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this note", null);
+                    ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + LanguageUtils.clickaddnote, null);
                     filled.setDurability((short) 4);
                     view.setItem(slot, filled);
                 }
@@ -170,22 +202,22 @@ public class MusicBoxMenu implements Listener {
         ItemStack around = new ItemStack(Material.STAINED_GLASS_PANE);
         around.setDurability((short) 9);
         ItemMeta meta = around.getItemMeta();
-        meta.setDisplayName(ChatColor.GRAY + "Music Box");
+        meta.setDisplayName(ChatColor.GRAY + LanguageUtils.displayname);
         around.setItemMeta(meta);
         surroundView(around, 10);
         if (pageNumber == 0) {
-            view.setItem(4, getItemStack(Material.NOTE_BLOCK, ChatColor.GOLD + "Back to the Main Menu", ChatColor.GRAY + "Click to go back"));
+            view.setItem(4, getItemStack(Material.NOTE_BLOCK, ChatColor.GOLD + LanguageUtils.backtomain, ChatColor.GRAY + LanguageUtils.clickgoback));
         } else {
-            view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + "Go Back One Page", ChatColor.GRAY + "Click to go back"));
+            view.setItem(4, getItemStack(Material.ARROW, ChatColor.GOLD + LanguageUtils.backonepage, ChatColor.GRAY + LanguageUtils.clickgoback));
         }
         if (pageNumber == maxPages-1) {
-            view.setItem(85, getItemStack(Material.NETHER_STAR, ChatColor.GOLD + "Create next page", ChatColor.GRAY + "Click to create the next page"));
+            view.setItem(85, getItemStack(Material.NETHER_STAR, ChatColor.GOLD + LanguageUtils.createnextpage, ChatColor.GRAY + LanguageUtils.clicktonextpage));
         } else {
-            view.setItem(85, getItemStack(Material.ARROW, ChatColor.GOLD + "Go to the Next Page", ChatColor.GRAY + "Click to go to the next page"));
+            view.setItem(85, getItemStack(Material.ARROW, ChatColor.GOLD + LanguageUtils.gotonextpage, ChatColor.GRAY + LanguageUtils.clickgotonextpage));
         }
-        ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to add a  note", null);
+        ItemStack empty = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + LanguageUtils.clickaddnote, null);
         empty.setDurability((short) 7);
-        ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + "Click to remove this note", null);
+        ItemStack filled = getItemStack(Material.STAINED_GLASS_PANE, ChatColor.GRAY + LanguageUtils.clickremovenote, null);
         filled.setDurability((short) 4);
         for (int i = 1; i < 9; i++) {
             byte b = box.data.data[instrument][pageNumber * 8 + i - 1];
@@ -214,9 +246,16 @@ public class MusicBoxMenu implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent event) throws IOException {
         if (event.getView() != view) return;
+        close(true);
+    }
+
+    public void close(boolean removeFromList) {
         box.editing = false;
         player.getInventory().setContents(inventory);
         box.data.save();
         HandlerList.unregisterAll(this);
+        player.closeInventory();
+        player.updateInventory();
+        if (removeFromList) openMenus.remove(this);
     }
 }

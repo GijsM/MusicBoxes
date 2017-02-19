@@ -1,5 +1,6 @@
 package org.devathon.contest2016.musicbox;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Instrument;
 import org.bukkit.Sound;
@@ -53,25 +54,33 @@ public class MusicBox  {
             menu.updatePosition(position);
 
     }
+    float[] octaves = new float[]{0.6F, 2/3F, 0.7F, 0.8F, 0.9F, 0.95F, 1.0F};
 
     public void play(byte b, Instrument instrument) {
-        if ((0b0000_0001&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.6F);
-        if ((0b0000_0010&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 2/3F);
-        if ((0b0000_0100&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.7F);
-        if ((0b0000_1000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.8F);
-        if ((0b0001_0000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.9F);
-        if ((0b0010_0000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 0.95F);
-        if ((0b0100_0000&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), 1F, 1.0F);
+        for (int i = 0;i<7;i++) {
+            if (((0b0000_0001<<i)&b) != 0) block.getWorld().playSound(block.getLocation(), getSound(instrument), data.volume/10F, octaves[i]);
+        }
     }
 
     Sound getSound(Instrument instrument) {
         switch (instrument) {
-            case BASS_DRUM: return Sound.BLOCK_NOTE_BASEDRUM;
-            case BASS_GUITAR: return Sound.BLOCK_NOTE_BASS;
-            case PIANO: return Sound.BLOCK_NOTE_HARP;
-            case SNARE_DRUM: return Sound.BLOCK_NOTE_SNARE;
-            case STICKS: return Sound.BLOCK_NOTE_HAT;
+            case BASS_DRUM: return Basedrum;
+            case BASS_GUITAR: return Bass;
+            case PIANO: return Harp;
+            case SNARE_DRUM: return Snare;
+            case STICKS: return Hat;
         }
         return null;
+    }
+
+    private static boolean old = Bukkit.getVersion().contains("1.8");
+    private static Sound Basedrum = (Sound) (old ? getSoundEnum("NOTE_BASS_DRUM") : getSoundEnum("BLOCK_NOTE_BASEDRUM"));
+    private static Sound Bass = (Sound) (old ? getSoundEnum("NOTE_BASS") : getSoundEnum("BLOCK_NOTE_BASS"));
+    private static Sound Harp = (Sound) (old ? getSoundEnum("NOTE_PIANO") : getSoundEnum("BLOCK_NOTE_HARP"));
+    private static Sound Snare = (Sound) (old ? getSoundEnum("NOTE_SNARE_DRUM") : getSoundEnum("BLOCK_NOTE_SNARE"));
+    private static Sound Hat = (Sound) (old ? getSoundEnum("NOTE_STICKS") : getSoundEnum("BLOCK_NOTE_HAT"));
+
+    public static Enum getSoundEnum(String s) {
+        return Enum.valueOf(Sound.class, s);
     }
 }

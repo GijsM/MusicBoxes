@@ -45,7 +45,7 @@ public class Compression {
             try {
                 count = inflater.inflate(buffer);
             } catch (DataFormatException e) {
-                e.printStackTrace();
+                return data;
             }
             outputStream.write(buffer, 0, count);
         }
